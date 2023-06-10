@@ -1,0 +1,902 @@
+<div class="center-element mx-auto" *ngIf="isLoading; else content">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<!-- Contenedor del perfil -->
+<ng-template #content>
+
+  <!-- Contenido -->
+  <ng-container *ngIf="!notFoundedError && !serverError && !authorizationError">
+     <!-- Contenedor del titulo -->
+    <div class="row mb-2 mb-xl-3">
+  <div class="col-auto d-none d-sm-block">
+    <h3>Ver chofer</h3>
+  </div>
+
+  <div class="col-auto ml-auto text-right mt-n1">
+  <app-breadcrum [items]="breadcrumbItems" [current]="currentPage"></app-breadcrum>
+  </div>
+      </div>
+<!-- Contenedor del titulo -->
+
+   <!-- COntenido -->
+  <div class="row">
+    <!-- Columna del perfil -->
+    <div class="col-md-4 col-xl-3">
+      <div class="card mb-3">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Detalles del chofer</h5>
+        </div>
+        <!-- Detalles -->
+        <div class="card-body text-center">
+          <img
+            src="../../../../assets/img/driver.png"
+            alt="Chofer PNG"
+            class="img-fluid rounded-circle mb-2"
+            width="128"
+            height="128"
+          />
+          <h5 class="card-title mb-0">{{ drivero.nombre | capitalize }}</h5>
+
+          <div class="text-muted mb-2" *ngIf="drivero.status === 'activo'">
+            Activo
+          </div>
+
+          <div class="text-danger mb-2" *ngIf="drivero.status === 'inactivo'">
+            Inactivo
+          </div>
+
+          <div>
+            <a
+              class="btn btn-info btn-sm text-white"
+              *ngIf="drivero.status === 'inactivo'"
+              (click)="reactivateDriver()"
+            >
+              Reactivar
+            </a>
+
+            <a
+              class="btn btn-danger btn-sm text-white"
+              *ngIf="drivero.status === 'activo'"
+              [routerLink]="['/admin/choferes/eliminar', drivero._id]"
+            >
+              Dar de baja
+            </a>
+          </div>
+        </div>
+        <!-- Detalles -->
+
+        <hr class="my-0" />
+
+        <!-- Datos generales -->
+        <div class="card-body">
+          <h5 class="h6 card-title">Datos generales</h5>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-person"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"
+                />
+              </svg>
+              Apellido P: {{ drivero.paterno | capitalize }}
+            </li>
+
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-person"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"
+                />
+              </svg>
+              Apellido M: {{ drivero.materno | capitalize }}
+            </li>
+
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-caret-right"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"
+                />
+              </svg>
+              Edad: {{ drivero.edad }}
+            </li>
+
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-caret-right"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"
+                />
+              </svg>
+              Sexo: {{ drivero.sexo }}
+            </li>
+
+            <!-- <li class="mb-1"><span data-feather="map-pin" class="feather-sm mr-1"></span> From <a href="#">Boston</a></li> -->
+          </ul>
+        </div>
+        <!-- Datos generales -->
+
+        <!-- Datos de registro-->
+
+        <hr class="my-0" />
+        <!-- Datos de licencia-->
+        <div class="card-body">
+          <h5 class="h6 card-title">Licencia</h5>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-person-badge"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+                />
+                <path
+                  d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"
+                />
+              </svg>
+              {{ drivero.licencia }}
+            </li>
+
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-credit-card-2-front"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"
+                />
+                <path
+                  d="M2 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"
+                />
+              </svg>
+              {{ drivero.tipo_licencia }}
+            </li>
+          </ul>
+        </div>
+        <!-- Datos de contacto -->
+
+        <hr class="my-0" />
+        <!-- Datos de contacto-->
+        <div class="card-body">
+          <h5 class="h6 card-title">Contacto</h5>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-telephone"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"
+                />
+              </svg>
+              {{ drivero.telefono }}
+            </li>
+
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-house-door"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"
+                />
+              </svg>
+              {{ drivero.domicilio }}
+            </li>
+          </ul>
+        </div>
+        <!-- Datos de contacto -->
+        <hr class="my-0" />
+
+        <hr class="my-0" />
+        <!-- Datos de registro-->
+        <div class="card-body">
+          <h5 class="h6 card-title">Registro</h5>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-archive"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"
+                />
+              </svg>
+              Codigo: {{ drivero.codigo }}
+            </li>
+
+            <li class="mb-1" *ngIf="drivero.ruta_ && !drivero.ruta" >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-bus-front"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M5 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-6-1a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H7Zm1-6c-1.876 0-3.426.109-4.552.226A.5.5 0 0 0 3 4.723v3.554a.5.5 0 0 0 .448.497C4.574 8.891 6.124 9 8 9c1.876 0 3.426-.109 4.552-.226A.5.5 0 0 0 13 8.277V4.723a.5.5 0 0 0-.448-.497A44.303 44.303 0 0 0 8 4Zm0-1c-1.837 0-3.353.107-4.448.22a.5.5 0 1 1-.104-.994A44.304 44.304 0 0 1 8 2c1.876 0 3.426.109 4.552.226a.5.5 0 1 1-.104.994A43.306 43.306 0 0 0 8 3Z"
+                />
+                <path
+                  d="M15 8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1V2.64c0-1.188-.845-2.232-2.064-2.372A43.61 43.61 0 0 0 8 0C5.9 0 4.208.136 3.064.268 1.845.408 1 1.452 1 2.64V4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v3.5c0 .818.393 1.544 1 2v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5V14h6v1.5a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2c.607-.456 1-1.182 1-2V8ZM8 1c2.056 0 3.71.134 4.822.261.676.078 1.178.66 1.178 1.379v8.86a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5V2.64c0-.72.502-1.301 1.178-1.379A42.611 42.611 0 0 1 8 1Z"
+                />
+              </svg>
+              {{ drivero.ruta_ }}
+            </li>
+
+            <li class="mb-1" *ngIf="drivero.ruta" >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-bus-front"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M5 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-6-1a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H7Zm1-6c-1.876 0-3.426.109-4.552.226A.5.5 0 0 0 3 4.723v3.554a.5.5 0 0 0 .448.497C4.574 8.891 6.124 9 8 9c1.876 0 3.426-.109 4.552-.226A.5.5 0 0 0 13 8.277V4.723a.5.5 0 0 0-.448-.497A44.303 44.303 0 0 0 8 4Zm0-1c-1.837 0-3.353.107-4.448.22a.5.5 0 1 1-.104-.994A44.304 44.304 0 0 1 8 2c1.876 0 3.426.109 4.552.226a.5.5 0 1 1-.104.994A43.306 43.306 0 0 0 8 3Z"
+                />
+                <path
+                  d="M15 8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1V2.64c0-1.188-.845-2.232-2.064-2.372A43.61 43.61 0 0 0 8 0C5.9 0 4.208.136 3.064.268 1.845.408 1 1.452 1 2.64V4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v3.5c0 .818.393 1.544 1 2v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5V14h6v1.5a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2c.607-.456 1-1.182 1-2V8ZM8 1c2.056 0 3.71.134 4.822.261.676.078 1.178.66 1.178 1.379v8.86a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5V2.64c0-.72.502-1.301 1.178-1.379A42.611 42.611 0 0 1 8 1Z"
+                />
+              </svg>
+              {{ drivero.ruta.nombre }}
+            </li>           
+
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-calendar-minus"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M5.5 9.5A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"
+                />
+                <path
+                  d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"
+                />
+              </svg>
+              {{ drivero.fecha_ingreso }}
+            </li>
+            <li class="mb-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-calendar-x"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708z"
+                />
+                <path
+                  d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"
+                />
+              </svg>
+              {{ drivero.fecha_baja }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Columna del perfil -->
+
+    <div class="col-md-8 col-xl-9">
+      <!-- Generales -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">General</h5>
+          <h6 class="card-subtitle text-muted">
+            Agrega o modifica los datos generales.
+          </h6>
+        </div>
+        <div class="card-body">
+          <form #generalForm="ngForm" (submit)="submitGeneral(generalForm)" >
+            <div class="form-group">
+              <label class="form-label" for="nombre">Nombre</label>
+              <input
+               [disabled]="disabledForms.generalForm"
+               [class.input-disabled]="disabledForms.generalForm"
+                type="text"
+                id="nombre"
+                name="nombre"
+                [class.is-invalid]="inputNombre.invalid && inputNombre.touched"
+                class="form-control"
+                #inputNombre="ngModel"
+                placeholder="Nombre"
+                [ngModel]="driver.nombre"
+                required
+              />
+              <small
+                class="form-text text-danger"
+                *ngIf="inputNombre.invalid && inputNombre.touched"
+                >Este campo es obligatorio</small
+              >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="paterno">Apellido paterno</label>
+              <input
+              [disabled]="disabledForms.generalForm"
+              [class.input-disabled]="disabledForms.generalForm"
+                type="text"
+                class="form-control"
+                placeholder="Paterno"
+                id="paterno"
+                name="paterno"
+                required
+                [ngModel]="driver.paterno"
+                #inputPaterno="ngModel"
+                [class.is-invalid]="inputPaterno.invalid && inputPaterno.touched"
+              />
+              <small
+              class="form-text text-danger"
+              *ngIf="inputPaterno.invalid && inputPaterno.touched"
+              >Este campo es obligatorio</small
+            >
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="materno">Materno</label>
+              <input
+              [disabled]="disabledForms.generalForm"
+              [class.input-disabled]="disabledForms.generalForm"
+                type="text"
+                class="form-control"
+                placeholder="Materno"
+                id="Materno"
+                name="materno"
+                required
+                [ngModel]="driver.materno"
+                #inputMaterno="ngModel"
+                [class.is-invalid]="inputMaterno.invalid && inputMaterno.touched"
+              />
+              <small
+              class="form-text text-danger"
+              *ngIf="inputMaterno.invalid && inputMaterno.touched"
+              >Este campo es obligatorio</small
+            >
+            </div>
+            <div class="form-group">
+              <label for="edad" class="form-label">Edad</label>
+              <input
+              [disabled]="disabledForms.generalForm"
+              [class.input-disabled]="disabledForms.generalForm"
+                min="20"
+                max="80"
+                mask="00"
+                type="number"
+                id="edad"
+                [class.is-invalid]="inputEdad.invalid && inputEdad.touched"
+                placeholder="edad"
+                class="form-control"
+                name="edad"
+                required
+                [ngModel]="driver.edad"
+                #inputEdad="ngModel"
+              />
+              <small
+              class="form-text text-danger"
+              *ngIf="inputEdad.invalid && inputEdad.touched"
+              >Este campo es obligatorio</small
+            >
+            </div>
+            <div class="form-group">
+              <label for="sexo" class="form-label">Sexo</label>
+              <select
+              [disabled]="disabledForms.generalForm"
+              [class.input-disabled]="disabledForms.generalForm"
+                id="sexo"
+                class="form-control"
+                name="sexo"
+                required
+                [ngModel]="driver.sexo"
+                #inputSexo="ngModel"
+                [class.is-invalid]="inputSexo.invalid && inputSexo.touched"
+              >
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+              <small
+              class="form-text text-danger"
+              *ngIf="inputSexo.invalid && inputSexo.touched"
+              >Este campo es obligatorio</small
+              >
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <button 
+              (click)="disabledForms.generalForm = false"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="disabledForms.generalForm"
+              >Modificar datos</button>
+
+              <button 
+            class="btn btn-primary"
+            type="submit"
+            *ngIf="!disabledForms.generalForm"
+            >Guardar cambios</button>
+
+            <button 
+              (click)="restoregeneral(generalForm)"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="!disabledForms.generalForm"
+              >Cancelar</button>
+              
+            </div>
+            
+            
+          </form>
+
+         
+          
+        </div>
+        <!-- Card Body -->
+      </div>
+      <!-- Generales -->
+
+      <!-- Licencia -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">Licencia</h5>
+          <h6 class="card-subtitle text-muted">
+            Agrega o modifica los datos de la licencia.
+          </h6>
+        </div>
+        <div class="card-body">
+          <form
+          #licenciaForm="ngForm"
+          (submit)="submitLicencia(licenciaForm)"
+          >
+            <div class="form-group">
+              <label for="licencia" class="form-label">Licencia</label>
+              <input
+                type="text"
+                class="form-control"
+               [disabled]="disabledForms.licenciaForm"
+               [class.input-disabled]="disabledForms.licenciaForm"
+                [class.is-invalid]="inputLicencia.invalid && inputLicencia.touched"
+                id="licencia"
+                placeholder="licencia"
+                name="licencia"
+                required
+                #inputLicencia="ngModel"
+                [ngModel]="driver.licencia"
+              />
+              <small
+              class="form-text text-danger"
+              *ngIf="inputLicencia.invalid && inputLicencia.touched"
+              >Este campo es obligatorio</small
+              >
+            </div>
+            <div class="form-group">
+              <label for="tipo_licencia" class="form-label"
+                >Tipo de licencia</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [disabled]="disabledForms.licenciaForm"
+               [class.input-disabled]="disabledForms.licenciaForm"
+                [class.is-invalid]="inputTipo_licencia.invalid && inputTipo_licencia.touched"
+                id="tipo_licencia"
+                placeholder="Tipo de licencia"
+                required
+                name="tipo_licencia"
+                #inputTipo_licencia="ngModel"
+                [ngModel]="driver.tipo_licencia"
+              />
+              <small
+              class="form-text text-danger"
+              *ngIf="inputTipo_licencia.invalid && inputTipo_licencia.touched"
+              >Este campo es obligatorio</small
+              >
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <button 
+              (click)="disabledForms.licenciaForm = false"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="disabledForms.licenciaForm"
+              >Modificar datos</button>
+
+              <button 
+            class="btn btn-primary"
+            type="submit"
+            *ngIf="!disabledForms.licenciaForm"
+            >Guardar cambios</button>
+
+            <button 
+              (click)="restorelicense(licenciaForm)"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="!disabledForms.licenciaForm"
+              >Cancelar</button>
+              
+            </div>
+          </form>
+        </div>
+        <!-- Card Body -->
+      </div>
+      <!-- Licencia -->
+
+      <!-- Contacto -->
+      <div class="card" *ngIf="loadMor">
+        <div class="card-header">
+          <h5 class="card-title">Contacto</h5>
+          <h6 class="card-subtitle text-muted">
+            Agrega o modifica los de contacto.
+          </h6>
+        </div>
+        <div class="card-body">
+          <form
+          #contactoForm="ngForm"
+          (submit)="submitContacto(contactoForm)"
+          >
+            <div class="form-group">
+              <label class="form-label" for="telefono">Telefono</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-telephone"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <input
+                [disabled]="disabledForms.contactoForm"
+                [class.input-disabled]="disabledForms.contactoForm"
+                  type="tel"
+                  class="form-control"
+                  id="telefono"
+                  [class.is-invalid]="inputTelefono.invalid && inputTelefono.touched"
+                  prefix="+52 "
+                  mask="00 0000 0000"
+                  [appendPrefixToModel]="true"
+                  [dropSpecialCharacters]="false"
+                  name="telefono"
+                  placeholder="#"
+                  required
+                  minlength="16"
+                  maxlength="16"
+                  [ngModel]="driver.telefono"
+                  #inputTelefono="ngModel"
+                />
+
+              </div>
+              <small
+              class="form-text text-danger"
+              *ngIf="inputTelefono.invalid && inputTelefono.touched && inputTelefono.errors?.['required']"
+              >Este campo es obligatorio</small
+              >
+              <small
+              class="form-text text-danger"
+              *ngIf="inputTelefono.invalid && inputTelefono.touched && inputTelefono.errors?.['minlength']"
+              >Numero no valido</small
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="domicilio">Domicilo</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-house-door"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                [disabled]="disabledForms.contactoForm"
+               [class.input-disabled]="disabledForms.contactoForm"
+                  [class.is-invalid]="inputDomicilio.invalid && inputDomicilio.touched"
+                  id="domicilio"
+                  placeholder="Agustin lara 69-B"
+                  name="domicilio"
+                  required
+                  [ngModel]="driver.domicilio"
+                  #inputDomicilio="ngModel"
+                />
+              </div>
+              <small
+              class="form-text text-danger"
+              *ngIf="inputDomicilio.invalid && inputDomicilio.touched"
+              >Este campo es obligatorio</small
+              >
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <button 
+              (click)="disabledForms.contactoForm = false"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="disabledForms.contactoForm"
+              >Modificar datos</button>
+
+              <button 
+            class="btn btn-primary"
+            type="submit"
+            *ngIf="!disabledForms.contactoForm"
+            >Guardar cambios</button>
+
+            <button 
+              (click)="restoreContacto(contactoForm)"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="!disabledForms.contactoForm"
+              >Cancelar</button>
+              
+            </div>
+          </form>
+        </div>
+        <!-- Card Body -->
+      </div>
+      <!-- Contacto -->
+
+      <!-- Registro -->
+      <div class="card" *ngIf="loadMor">
+        <div class="card-header">
+          <h5 class="card-title">Registro</h5>
+          <h6 class="card-subtitle text-muted">
+            Agrega o modifica los datos de registro.
+          </h6>
+        </div>
+        <div class="card-body">
+          <form 
+          #registroForm="ngForm"
+          (submit)="submitRegistro(registroForm)"
+          >
+            <div class="form-group">
+              <label for="codigo" class="form-label">Codigo</label>
+              <input
+                type="text"
+                class="form-control"
+                [disabled]="disabledForms.registroForm"
+                [class.input-disabled]="disabledForms.registroForm"
+                [class.is-invalid]="inputCodigo.invalid && inputCodigo.touched"
+                required
+                id="codigo"
+                prefix="RSO"
+                [appendPrefixToModel]="true"
+                mask="000"
+                placeholder="RSO000"
+                name="codigo"
+                [ngModel]="driver.codigo"
+                #inputCodigo="ngModel"
+              />
+              <small
+              class="form-text text-danger"
+              *ngIf="inputCodigo.invalid && inputCodigo.touched"
+              >Este campo es obligatorio</small
+              >
+            </div>
+
+            <div class="form-group" *ngIf="driver.ruta_ && !driver.ruta">
+              <label for="ruta" class="form-label">Ruta</label>
+              <select 
+              class="form-control"
+              [disabled]="disabledForms.registroForm"
+              [class.input-disabled]="disabledForms.registroForm"
+              [class.is-invalid]="inputRuta.invalid && inputRuta.touched"
+              id="ruta"
+              required
+              placeholder="ruta"
+              name="ruta"
+              [ngModel]="driver.ruta_"
+              #inputRuta="ngModel"
+               >
+                <option 
+                *ngFor="let ruta of rutas"
+                value="{{ruta._id}}"
+                > {{ruta.nombre}} </option>
+               </select>
+              <small
+              class="form-text text-danger"
+              *ngIf="inputRuta.invalid && inputRuta.touched"
+              >Este campo es obligatorio</small
+              >
+            </div>
+
+            <div class="form-group" *ngIf="driver.ruta">
+              <label for="ruta" class="form-label">Ruta</label>
+              <select 
+              class="form-control"
+              [disabled]="disabledForms.registroForm"
+              [class.input-disabled]="disabledForms.registroForm"
+              [class.is-invalid]="inputRuta.invalid && inputRuta.touched"
+              id="ruta"
+              required
+              placeholder="ruta"
+              name="ruta"
+              [ngModel]="driver.ruta._id"
+              #inputRuta="ngModel"
+               >
+                <option 
+                *ngFor="let ruta of rutas"
+                value="{{ruta._id}}"
+                > {{ruta.nombre}} </option>
+               </select>
+              <small
+              class="form-text text-danger"
+              *ngIf="inputRuta.invalid && inputRuta.touched"
+              >Este campo es obligatorio</small
+              >
+            </div>
+
+
+            <div class="d-flex justify-content-between align-items-center">
+              <button 
+              (click)="disabledForms.registroForm= false"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="disabledForms.registroForm"
+              >Modificar datos</button>
+
+              <button 
+            class="btn btn-primary"
+            type="submit"
+            *ngIf="!disabledForms.registroForm"
+            >Guardar cambios</button>
+
+            <button 
+              (click)="restoreRegistro(registroForm)"
+              type="button"
+              class="btn btn-primary"
+              *ngIf="!disabledForms.registroForm"
+              >Cancelar</button>
+              
+            </div>
+          </form>
+        </div>
+        <!-- Card Body -->
+      </div>
+      <!-- Licencia -->
+
+      <button
+        class="btn btn-primary w-100 mt-0"
+        (click)="toggleFlag()"
+        *ngIf="loadMor === false"
+      >
+        Ver mas
+      </button>
+
+      <button
+        class="btn btn-primary w-100"
+        (click)="toggleFlag()"
+        *ngIf="loadMor === true"
+      >
+        Ver menos
+      </button>
+    </div>
+    <!-- Col--md-8 -->
+  </div>
+   <!-- COntenido -->
+
+  </ng-container>
+  <!-- Contenido -->
+
+  <!-- Errores -->
+  <ng-container *ngIf="notFoundedError || serverError || authorizationError">
+    <div class="row">
+      <div class="col-12">
+
+         <!-- Authorization -->
+         <div *ngIf="authorizationError" class="alert alert-warning alert-dismissible" role="alert">
+          <div class="alert-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="16" fill="currentColor" class="bi bi-person-slash" viewBox="0 0 16 16">
+              <path d="M13.879 10.414a2.501 2.501 0 0 0-3.465 3.465l3.465-3.465Zm.707.707-3.465 3.465a2.501 2.501 0 0 0 3.465-3.465Zm-4.56-1.096a3.5 3.5 0 1 1 4.949 4.95 3.5 3.5 0 0 1-4.95-4.95ZM11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+            </svg>
+          </div>
+          <div class="alert-message">
+            <strong>Acceso no autorizado.</strong> No tienes autorizacion de acceder a esta pagina.
+          </div>
+        </div>
+        <!-- Authorization -->
+
+            <!-- Server -->
+            <div *ngIf="serverError" class="alert alert-danger alert-dismissible" role="alert">
+              <div class="alert-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                  <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                  <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+                </svg>
+              </div>
+              <div class="alert-message">
+                <strong>Error de servidor (500).</strong> No se pudo obtener una respuesta del servidor
+              </div>
+            </div>
+            <!-- Server -->
+
+              <!-- NotFOunded -->
+              <div *ngIf="notFoundedError" class="alert alert-danger alert-dismissible" role="alert">
+                <div class="alert-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                    <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                    <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+                  </svg>
+                </div>
+                <div class="alert-message">
+                  <strong>Error al obtener registro.</strong> Es posible que no exista.
+                </div>
+              </div>
+              <!-- NotFOunded -->
+
+      </div>
+    </div>
+  </ng-container>
+  <!-- Errores -->
+ 
+</ng-template>
+<!-- Contenedor del perfil -->

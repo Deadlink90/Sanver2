@@ -1,0 +1,301 @@
+<div class="row mb-2 mb-xl-3 animated fadeIn faster">
+  <div class="col-auto d-none d-sm-block">
+    <h3>Añadir nuevo chofer</h3>
+  </div>
+
+  <div class="col-auto ml-auto text-right mt-n1">
+  <app-breadcrum [items]="breadcrumbItems" [current]="currentPage"></app-breadcrum>
+  </div>
+  </div>
+
+<!-- Alerts -->
+<div 
+class="alert alert-danger alert-dismissible" 
+role="alert"
+*ngIf="errorAlertBoot"
+>
+  <div class="alert-icon">
+    <i class="far fa-fw fa-bell"></i>
+  </div>
+  <div class="alert-message">
+<strong>La operacion no pudo ser completada!!</strong> 
+  </div>
+</div>
+<!-- Alerts -->
+
+<div class="row animated fadeIn faster">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Crear nuevo chofer</h5>
+        <h6 class="card-subtitle text-muted">
+          Asegurese de llenar todos los campos y presione guardar.
+        </h6>
+      </div>
+      <div class="card-body">
+        <form 
+        autocomplete="off"
+        [formGroup]="driverForm"
+        (submit)="createDriver()"
+        >
+          <div class="row">
+            <div class="col-12 col-md-4">
+              <label class="form-label" for="nombre">Nombre</label>
+              <input
+                type="text"
+                id="nombre"
+                class="form-control"
+                placeholder="Nombre"
+                [class.is-invalid]="nombreValidator"
+                formControlName="nombre"
+              />
+              <small
+              class="text-danger"
+              *ngIf="nombreValidator && driverForm.get('nombre')?.errors?.['required']"
+              >Este campo es obligatorio</small>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label" for="paterno">Apellido paterno</label>
+              <input
+                placeholder="Apellido paterno"
+                type="text"
+                id="paterno"
+                [class.is-invalid]="paternoValidator"
+                class="form-control"
+                formControlName="paterno"
+              />
+              <small
+              class="text-danger"
+              *ngIf="paternoValidator && driverForm.get('paterno')?.errors?.['required']"
+              >Este campo es obligatorio</small>
+            </div>
+
+            <div class="form-label" class="col-12 col-md-4">
+              <label for="materno">Apellido materno</label>
+              <input
+                placeholder="Apellido materno"
+                type="text"
+                [class.is-invalid]="maternoValidator"
+                id="materno"
+                formControlName="materno"
+                class="form-control"
+              />
+              <small
+              class="text-danger"
+              *ngIf="maternoValidator && driverForm.get('materno')?.errors?.['required']"
+              >Este campo es obligatorio</small>
+              
+            </div>
+          </div>
+
+          <div class="row mt-3">
+           <div class="col-md-6">
+            <label for="edad" class="form-label" 
+            >Edad</label>
+            <input 
+            min="1"
+            max="80"
+            mask="00"
+            type="number" 
+            id="edad"
+            [class.is-invalid]="edadValidator"
+            placeholder="edad"
+            class="form-control"
+            formControlName="edad"
+            >
+            <small
+            class="text-danger"
+            *ngIf="edadValidator && driverForm.get('edad')?.errors?.['required']"
+            >Este campo es obligatorio</small>
+           </div>
+           <div class="col-md-6">
+            <label for="sexo" class="form-label"
+            >Sexo</label>
+            <select 
+            [class.is-invalid]="sexoValidator"
+            id="sexo" 
+            class="form-control"
+            formControlName="sexo"
+            >
+             <option value="Masculino">Masculino</option>
+             <option value="Femenino">Femenino</option>
+            </select>
+            <small
+            class="text-danger"
+            *ngIf="sexoValidator && driverForm.get('sexo')?.errors?.['required']"
+            >Este campo es obligatorio</small>
+           </div>
+          </div>
+
+          <div class="row mt-3">
+          <div class="col-12">
+            <label for="codigo" class="form-label"
+            >Codigo</label>
+            <input 
+            type="text"
+            [class.is-invalid]="codigoValidator"
+            class="form-control"
+            id="codigo"
+            prefix="RSO"
+            [appendPrefixToModel]="true"
+            mask="000"
+            placeholder="RSO000"
+            formControlName="codigo"
+            >
+            <small
+            class="text-danger"
+            *ngIf="codigoValidator && driverForm.get('codigo')?.errors?.['required']"
+            >Este campo es obligatorio</small>
+          </div>
+          </div>
+
+          <div class="row mt-3">
+           <div class="col-md-8">
+              <label for="licencia" class="form-label"
+              >Licencia</label>
+              <input 
+              [class.is-invalid]="licenciaValidator"
+              type="text"
+              class="form-control"
+              id="licencia"
+              formControlName="licencia"
+              placeholder="licencia"
+              >
+              <small
+            class="text-danger"
+            *ngIf="licenciaValidator && driverForm.get('licencia')?.errors?.['required']"
+            >Este campo es obligatorio</small>
+           </div>
+
+           <div class="col-md-4">
+            <label for="tipo_licencia" class="form-label"
+            >Tipo de licencia</label>
+            <input 
+            [class.is-invalid]="tipo_licenciaValidator"
+            type="text"
+            class="form-control"
+            id="tipo_licencia"
+            formControlName="tipo_licencia"
+            placeholder="Tipo de licencia"
+            >
+            <small
+            class="text-danger"
+            *ngIf="tipo_licenciaValidator && driverForm.get('tipo_licencia')?.errors?.['required']"
+            >Este campo es obligatorio</small>
+         </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12">
+              <label for="ruta" class="form-label"
+              >Ruta</label>
+               <select 
+               formControlName="ruta"
+                [class.is-invalid]="rutaValidator"
+                class="form-select"
+                id="ruta"
+                placeholder="ruta"
+               >
+                <option 
+                *ngFor="let ruta of rutas"
+                value="{{ruta._id}}"
+                > {{ruta.nombre}} </option>
+               </select>
+              <small
+              class="text-danger"
+              *ngIf="rutaValidator && driverForm.get('ruta')?.errors?.['required']"
+              >Este campo es obligatorio</small>
+            </div>
+          </div>
+         
+          <div class="row mt-3">
+            <div class="col-md-8">
+              <label class="form-label" for="domicilio">Domicilo</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-house-door"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="domicilio"
+                  [class.is-invalid]="domicilioValidator"
+                  formControlName="domicilio"
+                  placeholder="Agustin lara 69-B"
+                />
+              </div>
+              <small
+            class="text-danger"
+            *ngIf="domicilioValidator && driverForm.get('domicilio')?.errors?.['required']"
+            >Este campo es obligatorio</small>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label" for="telefono">Telefono</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-telephone"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="telefono"
+                  [appendPrefixToModel]="true"
+                  prefix="+52 "
+                  mask="00 0000 0000"
+                  [dropSpecialCharacters]="false"
+                  [class.is-invalid]="telefonoValidator"
+                  formControlName="telefono"
+                  placeholder="#"
+                />
+               
+              </div>
+              <small
+              class="text-danger"
+              *ngIf="telefonoValidator && driverForm.get('telefono')?.errors?.['required']"
+              >Este campo es obligatorio</small>
+
+              <small
+              class="text-danger"
+              *ngIf="telefonoValidator && driverForm.get('telefono')?.errors?.['minlength'] || driverForm.get('telefono')?.errors?.['maxlength']"
+              >Numero no valido, ingrese 10 digitos</small>
+            </div>
+          </div>
+ 
+          <div class="d-flex  justify-content-center mt-2">
+            <button type="submit" class="btn btn-primary mt-3 px-5">Guardar chofer</button>
+          </div>
+          
+        </form>
+      </div>
+      <!-- CardBody -->
+    </div>
+    <!-- Card -->
+  </div>
+</div>

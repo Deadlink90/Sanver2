@@ -1,0 +1,13 @@
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-transparent p-0 mt-1 mb-0">
+        <li class="breadcrumb-item" *ngFor="let item of items">
+            <a [routerLink]="item.url">{{ item.label }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            {{current}}
+          </li>
+      </ol>
+    </nav>
+
+

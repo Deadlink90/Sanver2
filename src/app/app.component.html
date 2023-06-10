@@ -1,0 +1,6 @@
+    <router-outlet *ngIf="!userLoged"></router-outlet>
+    
+    <app-template *ngIf="userLoged">
+        <router-outlet></router-outlet>
+    </app-template>
+    

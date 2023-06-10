@@ -1,0 +1,19 @@
+export interface driverModel{
+_id?:any
+nombre?:string
+paterno?:string
+materno?:string
+sexo?:string
+telefono?:string
+domicilio?:string
+edad?:string
+codigo?:string    
+status?:string
+ruta?:any
+ruta_?:any
+fecha_ingreso?:string
+fecha_baja:string,
+licencia?:string
+tipo_licencia?:string,
+motivo_baja?:string
+}

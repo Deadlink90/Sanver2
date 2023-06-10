@@ -1,0 +1,9 @@
+.form-disabled{
+    opacity: 0.6; 
+    pointer-events: none;    
+}
+
+.input-disabled{
+   background: none; 
+   opacity: 0.6; 
+}

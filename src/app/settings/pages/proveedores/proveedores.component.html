@@ -1,0 +1,136 @@
+<!-- Spinner -->
+<div
+  class="center-element mx-auto"
+  *ngIf="isLoading;else content"
+>
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<!-- Spinner -->
+
+<ng-template #content>
+
+  <ng-container *ngIf="!serverError">
+    <!-- Titulo -->
+    <div class="row mb-2 mb-xl-3">
+      <div class="col-auto d-none d-sm-block">
+        <h3> Listado de provedores</h3>
+      </div>
+    
+      <div class="col-auto ms-auto text-end mt-n1">
+
+        <a 
+        (click)="editing = !editing" 
+        class="btn btn-light bg-white me-2"
+        *ngIf="editing"
+        >Cancelar</a>
+
+        <a routerLink="/admin/ajustes/proveedores/nuevo" class="btn btn-primary">Nuevo Proveedor</a>
+      </div>
+    </div>
+    <!-- Titulo -->
+    
+    <div class="row animated fadeIn faster">
+      <div 
+      class="col-12 col-md-6 col-xxl d-flex" 
+      *ngFor="let provider of providers"
+      >
+        <div class="card flex-fill">
+          <div class="card-body">
+            <div class="row">
+              <div class="col mt-0">
+                <h5 class="card-title">{{provider.nombre}} </h5>
+              </div>
+
+              <div class="col-auto">
+                <div class="stat">
+                  <div class="dropdown position-relative">
+                    <a
+                      href="#"
+                      data-bs-toggle="dropdown"
+                      data-bs-display="static"
+                      matTooltip="Acciones"
+                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump" viewBox="0 0 16 16">
+                      <path d="M3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-5Z"/>
+                      <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1c.564 0 1.034.11 1.412.336.383.228.634.551.794.907.295.655.294 1.465.294 2.081v3.175a.5.5 0 0 1-.5.501H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V2Zm9 0a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13h8V2Z"/>
+                    </svg>
+                    </a>
+        
+                    <div class="dropdown-menu dropdown-menu-end">
+                      <a class="dropdown-item" 
+                    [routerLink]="['/admin/ajustes/proveedores/editar',provider._id]"
+                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle mr-2" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                      </svg>
+                     Ver
+                    </a>
+        
+                      <a class="dropdown-item"
+                      (click)="deleteProvider(provider._id)"
+                      *ngIf="provider.status === 'activo'"
+                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3 mr-2" viewBox="0 0 16 16">
+                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                      </svg>
+                      Eliminar
+                    </a>
+        
+                    <a class="dropdown-item"
+                      (click)="reactivateProvider(provider._id)"
+                      *ngIf="provider.status !== 'activo'"
+                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-circle mr-2" viewBox="0 0 16 16">
+                        <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/>
+                        <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
+                      </svg>
+                      Activar proveedor
+                    </a>
+        
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h4 class="mt-0 mb-1">
+              ${{provider.precio}} <span class="text-muted">Gasolina</span>
+            </h4>
+
+            <div class="mb-0">
+              <span class="badge badge-success-light" *ngIf="provider.status === 'activo'">
+                <i class="mdi mdi-arrow-bottom-right"></i> {{provider.status}}
+              </span>
+              <span class="badge badge-warning-light" *ngIf="provider.status !== 'activo'">
+                <i class="mdi mdi-arrow-bottom-right"></i> {{provider.status}}
+              </span>
+              <span class="text-muted">
+
+                
+
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="serverError">
+    <div *ngIf="serverError" class="alert alert-danger alert-dismissible" role="alert">
+      <div class="alert-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+          <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+          <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+        </svg>
+      </div>
+      <div class="alert-message">
+        <strong>Algo salio mal.</strong> No se pudo obtener una respuesta del servidor.
+      </div>
+    </div>
+  </ng-container>
+
+</ng-template>
+
