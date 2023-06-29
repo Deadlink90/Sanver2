@@ -5,6 +5,7 @@ import { ProvidersService } from '../../services/providers.service';
 import { Router } from '@angular/router';
 import { AlertsService, config } from 'src/app/global/services/alerts.service';
 import { ErrorsSettingsService } from '../../services/errors-settings.service';
+import { SesionService } from 'src/app/global/services/sesion.service';
 
 @Component({
   selector: 'app-providers-create',
@@ -24,12 +25,15 @@ export class ProvidersCreateComponent implements OnInit {
     private providerService: ProvidersService,
     private router: Router,
     private alerts: AlertsService,
-    private error: ErrorsSettingsService
+    private error: ErrorsSettingsService,
+    private sessionService:SesionService
       ) {}
 
   ngOnInit(): void {
     this.addTicket();
   }
+
+  rol = this.sessionService.verifyRol();
 
   providerForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(45)]],

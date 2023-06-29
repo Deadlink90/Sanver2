@@ -4,6 +4,13 @@ import Swal from 'sweetalert2';
 export interface config{
  message:string
  timmer:number 
+
+}
+
+export interface success{
+  title:string
+  message:string
+  confirmText:string
 }
 
 @Injectable({
@@ -37,6 +44,44 @@ export class AlertsService {
       });
     });
   }
+
+  successConfirmAlert(config:success,callback: () => void) {
+      Swal.fire({
+        icon: 'success',
+        title: config.title,
+        text: config.message,
+        confirmButtonColor: '#2980B9',
+        confirmButtonText: config.confirmText,
+        showDenyButton: true,
+        denyButtonText: 'Cancelar',
+        didOpen: () => {
+          const alertElement = Swal.getPopup();
+          if (alertElement) {
+            alertElement.style.left = '110px'; // Personaliza la posición horizontal
+          }
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+        callback();
+        } 
+      });
+  }
+
+  genericShowSuccess(config:success) {
+    Swal.fire({
+      icon: 'success',
+      title: config.title,
+      text: config.message,
+      confirmButtonColor: '#2980B9',
+      confirmButtonText: config.confirmText,
+      didOpen: () => {
+        const alertElement = Swal.getPopup();
+        if (alertElement) {
+          alertElement.style.left = '110px'; // Personaliza la posición horizontal
+        }
+      },
+    })
+}
 
   async genericSuccesTimer(message: string, timmer: any): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
@@ -109,8 +154,8 @@ export class AlertsService {
   genericShowError() {
     Swal.fire({
       icon: 'error',
-      title: 'Error (500)',
-      text: 'La peticion no pudo ser procesada',
+      title: 'Error',
+      text: 'La peticion no pudo ser completa',
       didOpen: () => {
         const alertElement = Swal.getPopup();
         if (alertElement) {

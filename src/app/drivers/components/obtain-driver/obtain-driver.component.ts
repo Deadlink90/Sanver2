@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DriversService } from '../../services/drivers.service';
 import { driverModel } from '../../models/driver.model';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { AlertsService } from 'src/app/global/services/alerts.service';
+import { AlertsService, config, success } from 'src/app/global/services/alerts.service';
 import { SesionService } from 'src/app/global/services/sesion.service';
 import { ErrorsService } from '../../services/errors.service';
 import { ObservablesService } from '../../services/observables.service';
@@ -32,7 +32,6 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
   authorizationError:boolean=false;
   serverError:boolean=false;
 
-  currentPage:string='Ver chofer'
 
   authorizationSuscription?:Subscription;
   serverSuscription?:Subscription;
@@ -51,16 +50,18 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
   loadMor: boolean = false;
 
   disabledForms={
-  generalForm:true,
-  licenciaForm:true,
-  contactoForm:true,
-  registroForm:true
+  generalForm:false,
+  licenciaForm:false,
+  contactoForm:false,
+  registroForm:false
   }
 
   breadcrumbItems: BreadcrumbItem[] = [
     {label:'Menu',url:'/admin/choferes'},
-    {label:'Listado',url:'/admin/choferes/listado'}
+    {label:'Lista de choferes',url:'/admin/choferes/listado'}
   ]
+  currentPage:string='Editar chofer'
+
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -68,7 +69,8 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     private alerts: AlertsService,
     public sesionService:SesionService,
     private errors:ErrorsService,
-    private observables:ObservablesService
+    private observables:ObservablesService,
+    private router:Router
   ) {}
 
   rol = this.sesionService.verifyRol();
@@ -140,6 +142,8 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     this.loadMor = !this.loadMor;
   }
 
+
+
   async submitGeneral(form: NgForm) {
     if (form.invalid) {
       Object.values(form.controls).forEach((control) => {
@@ -149,12 +153,11 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     }
 
     const confirm = await this.alerts.genericConfirmAlert(
-      '¿Estas seguro de que deseas guardar los cambios'
+      '¿Estas seguro de que deseas guardar los cambios?'
     );
 
     if (confirm) {
       this.editDriverHttp(form);
-      this.disabledForms.generalForm=true;
     }
   }
 
@@ -167,12 +170,11 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     }
 
     const confirm = await this.alerts.genericConfirmAlert(
-      '¿Estas seguro de que deseas guardar los cambios'
+      '¿Estas seguro de que deseas guardar los cambios?'
     );
 
     if (confirm) {
       this.editDriverHttp(form);
-      this.disabledForms.licenciaForm=true;
     }
   }
 
@@ -185,12 +187,11 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     }
 
     const confirm = await this.alerts.genericConfirmAlert(
-      '¿Estas seguro de que deseas guardar los cambios'
+      '¿Estas seguro de que deseas guardar los cambios?'
     );
 
     if (confirm) {
       this.editDriverHttp(form);
-      this.disabledForms.contactoForm = true;
     }
   }
 
@@ -203,14 +204,15 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     }
 
     const confirm = await this.alerts.genericConfirmAlert(
-      '¿Estas seguro de que deseas guardar los cambios'
+      '¿Estas seguro de que deseas guardar los cambios?'
     );
 
     if (confirm) {
       this.editDriverHttp(form);
-      this.disabledForms.registroForm = true;
     }
   }
+
+
 
   async reactivateDriver(){
     const confirm = await this.alerts.genericConfirmAlert(
@@ -220,7 +222,8 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     if (confirm) {
     this.driverService.reactivateDriver(this.drivero._id).subscribe(res => {
       this.drivero = res;
-        this.alerts.genericSuccesTimer('Chofer actualizado con exito!!', 1500);
+      this.driver=res;
+        this.alerts.genericSuccesTimer('Chofer actualizado con exito!!', 1200);
     },err => {
       this.alerts.genericShowError();
     })  
@@ -256,7 +259,6 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
 
     restoreRegistro(form:NgForm){
     form.setValue({
-    codigo:this.drivero.codigo || '',
     ruta:this.drivero.ruta || ''  
     })
     this.disabledForms.registroForm = true;
@@ -266,10 +268,21 @@ export class ObtainDriverComponent implements OnInit,OnDestroy {
     this.driverService.editDriver(form.value, this.drivero._id).subscribe(
       (res) => {
         this.drivero = res;
+        this.driver = {...res};
         this.notFoundedError=false
         this.authorizationError=false;
         this.serverError=false
-        this.alerts.genericSuccesTimer('Chofer actualizado con exito!!', 1500);
+        
+        const config:success={
+        title:'Cambios guardados con exito!!',
+        message:'¿Deseas ver el perfil actualizado?',
+        confirmText:'Ver perfil' 
+        }
+
+        const callback = () => {
+        this.router.navigate(['/admin/choferes/perfil',this.driver._id]);  
+        }
+        this.alerts.successConfirmAlert(config,callback);
       },
       (err) => {
         this.errors.checkError(err);

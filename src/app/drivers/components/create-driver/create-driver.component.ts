@@ -20,8 +20,8 @@ _id:any
 })
 
 export class CreateDriverComponent implements OnInit {
-  confirmMessage: string = '¿Estas seguro de que deseas agregar a este chofer';
-  sucessMessage: string = 'Chofer creado con exito!!';
+  confirmMessage: string = '¿Estas seguro de que deseas agregar a este chofer?';
+  sucessMessage: string = 'Chofer creado correctamente!!';
   errorAlertBoot:boolean=false;
 
   rutas:ruta[] = [];
@@ -54,10 +54,6 @@ export class CreateDriverComponent implements OnInit {
     materno: ['', [Validators.required, Validators.maxLength(20)]],
     edad: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
     sexo: ['Masculino', [Validators.required]],
-    codigo: [
-      '',
-      [Validators.maxLength(6), Validators.minLength(6), Validators.required],
-    ],
     licencia: ['', [Validators.required]],
     tipo_licencia: ['', [Validators.required]],
     ruta: ['', [Validators.required]],
@@ -84,7 +80,7 @@ export class CreateDriverComponent implements OnInit {
             title: this.sucessMessage,
             allowOutsideClick: false,
             allowEscapeKey: false,
-            timer: 2000,
+            timer: 1200,
             timerProgressBar: true,
             showConfirmButton: false,
             didOpen: () => {
@@ -95,7 +91,7 @@ export class CreateDriverComponent implements OnInit {
             },
           }).then((result) => {
             if (result.dismiss === Swal.DismissReason.timer) {
-            this.router.navigate(['/admin/choferes/ver',res.id])
+            this.router.navigate(['/admin/choferes/perfil',res.id])
             }
           });
         },err => {
@@ -110,7 +106,7 @@ export class CreateDriverComponent implements OnInit {
   this.driverService.obtainRutas().subscribe(rutas => {
   this.rutas = rutas;
   },
-  err => console.log(err)
+  err => this.errorAlertBoot = true
   )  
   }
 
@@ -190,4 +186,12 @@ export class CreateDriverComponent implements OnInit {
       this.driverForm.get('telefono')?.touched
     );
   }
+
+  obtainrouteName(id:any){
+  const routeObject = this.rutas.find(route => route._id === id);
+  return routeObject ? routeObject.nombre : '';
+  }
+
+
+  
 }

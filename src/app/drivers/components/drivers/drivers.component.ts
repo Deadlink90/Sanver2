@@ -10,9 +10,12 @@ import { SesionService } from 'src/app/global/services/sesion.service';
 import { ErrorsService } from '../../services/errors.service';
 import { ObservablesService } from '../../services/observables.service';
 import { Subscription } from 'rxjs';
+import { RutasService } from 'src/app/settings/services/rutas.service';
+import { rutaModel } from 'src/app/settings/models/ruta.model';
+import { AlertsService } from 'src/app/global/services/alerts.service';
 
 interface querys {
-  nombre?: string;
+  ruta?: string;
   status?: string;
   codigo?: string;
 }
@@ -25,6 +28,7 @@ interface querys {
 
 export class DriversComponent implements OnInit,OnDestroy {
 
+  rutasArray:rutaModel[]=[];
   authorizationError:boolean=false;
   serverError:boolean=false;
 
@@ -37,7 +41,7 @@ export class DriversComponent implements OnInit,OnDestroy {
   //pagina actual
   currentPage: number = 1;
   //elementos a mostrar por pagina
-  itemsPerPage: number = 5;
+  itemsPerPage: number = 10;
   //ultima pagina
   lastPage = 0;
   //objeto que muestra los numeros en la paginacion
@@ -72,7 +76,9 @@ export class DriversComponent implements OnInit,OnDestroy {
     private fileSaver: FileSaverService,
     public sesionService:SesionService,
     private errors:ErrorsService,
-    private observables:ObservablesService
+    private observables:ObservablesService,
+    private rutasService:RutasService,
+    private alerts:AlertsService
   ) {}
 
   rol = this.sesionService.verifyRol();
@@ -92,12 +98,14 @@ export class DriversComponent implements OnInit,OnDestroy {
     this.filtersObject.status = 'todos';
     this.saveQuerys();
     this.errorsInit();
+    this.obtainRoutes();
   }
 
   ngOnDestroy(): void {
   this.serverSuscription?.unsubscribe();
   this.authorizationSuscription?.unsubscribe();
   }
+  
 
   errorsInit(){
   this.authorizationSuscription = this.observables.isAuthorizated$.subscribe(authorization => {
@@ -188,6 +196,20 @@ export class DriversComponent implements OnInit,OnDestroy {
       }
     );
   }
+
+  obtainRoutes(){
+  this.rutasService.obtainRutas().subscribe( rutas => {
+  rutas.unshift({
+    _id:'no_id',
+    nombre:'no aplicado',
+    status:'activo'
+  })    
+  this.rutasArray = rutas;  
+  this.filtersObject.ruta=this.rutasArray[0]._id;
+  },err => {
+    this.alerts.customizedError('No se pudieron obtener las rutas!!')
+  })  
+  }
   //-----Methods of pagination------//
   //cambiar el numero de elementos por pagina
   onOptionSelected(event: any) {
@@ -248,17 +270,22 @@ export class DriversComponent implements OnInit,OnDestroy {
   //filter by state
   onlyState(event: any) {
     delete this.checkQuerysObject.codigo;
+    delete this.checkQuerysObject.ruta;
     let state = event.target.value;
-    this.itemsPerPage = 5;
+    this.itemsPerPage = 10;
 
     if (this.objectTest.codigo) {
       delete this.objectTest.codigo;
       this.searchValue = '';
     }
 
+    if (this.objectTest.ruta) {
+      delete this.objectTest.ruta;
+      this.filtersObject.ruta = this.rutasArray[0]._id;
+    }
+
     if (state !== 'todos') {
       this.objectTest.status = state;
-
       this.router.navigate(['/admin/choferes/all'], {
         queryParams: this.objectTest,
       });
@@ -274,16 +301,27 @@ export class DriversComponent implements OnInit,OnDestroy {
         delete this.checkQuerysObject.status;
       }
 
+      if (this.checkQuerysObject.ruta) {
+        delete this.checkQuerysObject.ruta;
+      }
+
       this.currentPage = 1;
       this.router.navigate(['/admin/choferes/all']);
       this.obtainDriversGet();
     }
   }
 
-  //input de busqueda
-  sendSearch() {
+  onlyRoute(event:any){
+    delete this.checkQuerysObject.codigo;
     delete this.checkQuerysObject.status;
-    this.itemsPerPage = 5;
+    this.searchValue = '';
+    
+    let route = event.target.value;
+    this.itemsPerPage = 10;
+    
+    if (this.objectTest.codigo) {
+      delete this.objectTest.codigo;
+    }
 
     if (this.objectTest.status) {
       delete this.objectTest.status;
@@ -291,7 +329,53 @@ export class DriversComponent implements OnInit,OnDestroy {
       // this.searchValue='';
     }
 
-    const nombre = `RSO${this.searchValue}`;
+    if(route !== 'no_id'){
+      this.objectTest.ruta = route;
+        this.router.navigate(['/admin/choferes/all'], {
+          queryParams: this.objectTest,
+        });
+  
+        this.currentPage = 1;
+        this.obtainDriversGetQuery();
+    }else{
+      if (this.checkQuerysObject.codigo) {
+        delete this.checkQuerysObject.codigo;
+      }
+
+      if (this.checkQuerysObject.status) {
+        delete this.checkQuerysObject.status;
+      }
+
+      if (this.checkQuerysObject.ruta) {
+        delete this.checkQuerysObject.ruta;
+      }
+
+      this.currentPage = 1;
+      this.router.navigate(['/admin/choferes/all']);
+      this.obtainDriversGet(); 
+    }
+
+  }
+
+  //input de busqueda
+  sendSearch() {
+    delete this.checkQuerysObject.status;
+    delete this.checkQuerysObject.ruta;
+    this.itemsPerPage = 10;
+
+    if (this.objectTest.status) {
+      delete this.objectTest.status;
+      this.filtersObject.status = 'todos';
+      // this.searchValue='';
+    }
+
+    if (this.objectTest.ruta) {
+      delete this.objectTest.ruta;
+      this.filtersObject.ruta=this.rutasArray[0]._id;
+      // this.searchValue='';
+    }
+
+    const nombre = `RS${this.searchValue}`;
     this.objectTest.codigo = nombre;
 
     this.router.navigate(['/admin/choferes/all'], {
@@ -306,6 +390,7 @@ export class DriversComponent implements OnInit,OnDestroy {
   cleanFilters() {
     this.router.navigate(['/admin/choferes/all']);
     this.filtersObject.status = 'todos';
+    this.filtersObject.ruta = this.rutasArray[0]._id;
     this.getErro = false;
 
     if (this.checkQuerysObject.codigo) {
@@ -315,8 +400,13 @@ export class DriversComponent implements OnInit,OnDestroy {
     if (this.checkQuerysObject.status) {
       delete this.checkQuerysObject.status;
     }
+
+    if (this.checkQuerysObject.ruta) {
+      delete this.checkQuerysObject.ruta;
+    }
+
     this.searchValue = '';
-    this.itemsPerPage = 5;
+    this.itemsPerPage = 10;
     this.obtainDriversGet();
   }
 
@@ -330,6 +420,11 @@ export class DriversComponent implements OnInit,OnDestroy {
       if (querys['status']) {
         this.checkQuerysObject.status = querys['status'];
         this.filtersObject.status = querys['status'];
+      }
+
+      if (querys['ruta']) {
+        this.checkQuerysObject.ruta = querys['ruta'];
+        this.filtersObject.ruta = querys['ruta'];
       }
     });
   }
@@ -391,31 +486,10 @@ export class DriversComponent implements OnInit,OnDestroy {
     this.obtainDriversGet();
   }
 
-  deleteDriver() {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success ml-2',
-        cancelButton: 'btn btn-danger',
-      },
-      buttonsStyling: false,
-    });
+  obtainrouteName(id:any){
+    const routeObject = this.rutasArray.find(route => route._id === id);
+    return routeObject ? routeObject.nombre : '';
+    }
 
-    swalWithBootstrapButtons.fire({
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
-      reverseButtons: true,
-      position: 'center',
-      width: '30%',
-      title: 'Confirmacion',
-      text: '¿De verdad quiere dar de baja a este conductor?',
-      didOpen: () => {
-        const alertElement = Swal.getPopup();
-        if (alertElement) {
-          alertElement.style.left = '80px'; // Personaliza la posición horizontal
-        }
-      },
-    });
-  }
+
 }

@@ -1,1 +1,269 @@
-<p>edit-driver works!</p>
+<div class="center-element mx-auto" *ngIf="isLoading; else content">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<ng-template #content>
+
+    <ng-container *ngIf="!error">
+        <!-- Contenedor del titulo -->
+        <div class="row mb-2 mb-xl-3">
+            <div class="col-auto d-none d-sm-block">
+              <h3>Perfil</h3>
+            </div>
+          
+            <div class="col-auto ml-auto text-right mt-n1">
+              <app-breadcrum
+                [items]="breadcrumbItems"
+                [current]="currentPage"
+              ></app-breadcrum>
+            </div>
+          </div>
+          <!-- Contenedor del titulo -->
+
+          <!-- Contenido -->
+          <div class="row">
+            <div class="col-xl-4">
+              <div class="card">
+                <div class="card-header">
+
+                  <div class="card-actions float-end">
+
+                    <div
+                    *ngIf="updateSpinner"
+                        class="spinner-border spinner-border-sm text-info me-2"
+                        role="status"
+                      >
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+
+                    <div class="dropdown position-relative" *ngIf="!updateSpinner">
+                      <a href="#" data-bs-toggle="dropdown" data-bs-display="static">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-three-dots"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"
+                          />
+                        </svg>
+                      </a>
+        
+                      <div class="dropdown-menu dropdown-menu-end">
+                        <a class="dropdown-item"
+                        [routerLink]="['/admin/choferes/ver',driver._id]"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen mr-2" viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                          </svg>
+                        Editar datos
+                       </a>
+                        <a class="dropdown-item" 
+                        [routerLink]="['/admin/choferes/eliminar',driver._id]"
+                        *ngIf="driver.status === 'activo'"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3 mr-2" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                          </svg>
+                        Dar de baja
+                    </a>
+                    <a 
+                    class="dropdown-item" 
+                    (click)="reactivateDriver()"
+                    *ngIf="driver.status === 'inactivo'"
+                    >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-circle mr-2" viewBox="0 0 16 16">
+                      <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/>
+                      <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
+                    </svg>
+                    Reactivar
+                </a>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <h5 class="card-title mb-0"> {{ driver.nombre | capitalize }} </h5>
+                </div>
+                <div class="card-body">
+                  <div class="row g-0">
+                    <div class="col-sm-3 col-xl-12 col-xxl-3 text-center">
+                      <img
+                        src="../../../../assets/img/driver.png"
+                        width="64"
+                        height="64"
+                        class="rounded-circle mt-2"
+                        [alt]="driver.nombre"
+                      />
+                    </div>
+                    <div 
+                    class="col-sm-9 col-xl-12 col-xxl-9 mt-3"
+                    *ngIf="driver.status === 'activo'"
+                    >
+                      <strong>Acerca del chofer</strong>
+                      <p>
+                        Fecha de ingreso en {{driver.fecha_ingreso}}
+                      </p>
+                    </div>
+
+                    <div 
+                    class="col-sm-9 col-xl-12 col-xxl-9 mt-3"
+                    *ngIf="driver.status === 'inactivo'"
+                    >
+                      <strong class="text-danger">Motivo de baja</strong>
+                      <p>
+                        {{driver.motivo_baja}}
+                      </p>
+                    </div>
+                  </div>
+        
+                  <table class="table table-sm mt-2 mb-4">
+                    <tbody>
+                      <tr>
+                        <th>Nombre</th>
+                        <td> {{driver.nombre | capitalize}} </td>
+                      </tr>
+                      <tr>
+                        <th>Apellidos</th>
+                        <td> {{driver.paterno | capitalize}} {{driver.materno | capitalize}} </td>
+                      </tr>
+                      <tr>
+                        <th>Edad</th>
+                        <td *ngIf="driver.edad"
+                        > {{driver.edad}} años</td>
+                        <td *ngIf="!driver.edad"
+                        class="text-danger"
+                        >No proporcionado</td>
+                      </tr>
+                      <tr>
+                        <th>Telefono</th>
+                        <td *ngIf="driver.telefono">{{driver.telefono}}</td>
+                        <td *ngIf="!driver.telefono"
+                        class="text-danger"
+                        >No proporcionado</td>
+                      </tr>
+
+                      <tr>
+                        <th>Licencia</th>
+                        <td
+                        *ngIf="driver.licencia"
+                        > {{driver.licencia}} </td>
+                        <td
+                        class="text-danger"
+                        *ngIf="!driver.licencia"
+                        > No proporcionado </td>
+                      </tr>
+
+                      <tr>
+                        <th>Tipo de licencia</th>
+                        <td
+                        *ngIf="driver.tipo_licencia"
+                        > {{driver.tipo_licencia}} </td>
+                        <td
+                        class="text-danger"
+                        *ngIf="!driver.tipo_licencia"
+                        > No proporcionado </td>
+                      </tr>
+
+                      <tr>
+                        <th>Domicilio</th>
+                        <td *ngIf="driver.domicilio"
+                        >{{driver.domicilio}} </td>
+                        <td 
+                        *ngIf="!driver.domicilio"
+                        class="text-danger"
+                        >No proporcionado </td>
+                      </tr>
+
+                      <tr>
+                        <th>Ruta</th>
+                        <td
+                        *ngIf="driver.ruta"
+                        > {{driver.ruta.nombre}} </td>
+
+                        <td
+                        *ngIf="!driver.ruta"
+                        > {{driver.ruta_}} </td>
+
+                        <td
+                        class="text-danger"
+                        *ngIf="!driver.ruta && !driver.ruta_"
+                        > No proporcionado </td>
+                      </tr>
+
+                      <tr>
+                        <th>Estado</th>
+                        <td>
+                        <span 
+                        *ngIf="driver.status === 'activo'"
+                        class="badge bg-success"
+                        >Activo</span>
+                        
+                        <span 
+                        *ngIf="driver.status === 'inactivo'"
+                        class="badge bg-warning"
+                        >Inactivo</span>
+                    </td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+        
+                </div>
+              </div>
+            </div>
+        
+            <div class="col-xl-8">
+              <div class="card">
+                <div class="card-header pb-0">
+                  <h5 class="card-title mb-0">Transacciones</h5>
+                </div>
+                <div class="card-body">
+                <!-- Contenido de las transacciones -->
+                </div>
+              </div>
+            </div>
+          </div>
+           <!-- Contenido -->
+    </ng-container>
+
+    <ng-container *ngIf="error">
+    <div class="row">
+      <div class="col-12">
+        <!-- Server -->
+        <div *ngIf="error === 'serverError' " class="alert alert-danger alert-dismissible" role="alert">
+          <div class="alert-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+            </svg>
+          </div>
+          <div class="alert-message">
+            <strong>Algo salio mal.</strong> No se pudo obtener una respuesta del servidor.
+          </div>
+        </div>
+        <!-- Server -->
+
+        <!-- Server -->
+        <div *ngIf="error === 'notFoundedError' " class="alert alert-danger alert-dismissible" role="alert">
+          <div class="alert-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+            </svg>
+          </div>
+          <div class="alert-message">
+            <strong>El registro no pudo ser recuperado.</strong> Verifique que exista e intentelo nuevamente.
+          </div>
+        </div>
+        <!-- Server -->
+      </div>
+    </div>
+    </ng-container>
+    
+</ng-template>

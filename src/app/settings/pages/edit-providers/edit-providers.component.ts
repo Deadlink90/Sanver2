@@ -8,6 +8,7 @@ import { ErrorsSettingsService } from '../../services/errors-settings.service';
 import { providerModel } from '../../models/provider.model';
 import { Subscription } from 'rxjs';
 import { ObservablesSetingsService } from '../../services/observables-setings.service';
+import { SesionService } from 'src/app/global/services/sesion.service';
 
 @Component({
   selector: 'app-edit-providers',
@@ -46,7 +47,8 @@ export class EditProvidersComponent implements OnInit,OnDestroy{
     private alerts: AlertsService,
     private error: ErrorsSettingsService,
     private activatedRoute:ActivatedRoute,
-    private observables: ObservablesSetingsService
+    private observables: ObservablesSetingsService,
+    private sessionService:SesionService
   ) {}
 
   ngOnInit(): void {
@@ -62,10 +64,12 @@ export class EditProvidersComponent implements OnInit,OnDestroy{
   }
 
   providerForm: FormGroup = this.fb.group({
-    nombre: ['', [Validators.required, Validators.maxLength(45)]],
+    nombre: ['', [Validators.required, Validators.maxLength(52)]],
     precio: ['', [Validators.required]],
     tickets: this.fb.array([]),
   });
+
+  rol = this.sessionService.verifyRol();
 
   initErrors(){
    this.sE = this.observables.serverError$.subscribe(err => {
@@ -234,7 +238,7 @@ export class EditProvidersComponent implements OnInit,OnDestroy{
     this.isLoading=false;
     } 
     ) 
-    }
+  }
 
 
 

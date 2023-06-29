@@ -32,7 +32,7 @@ export class DeleteDriverComponent implements OnInit,OnDestroy {
 
   breadcrumbItems: BreadcrumbItem[] = [
     {label:'Menu',url:'/admin/choferes'},
-    {label:'Listado',url:'/admin/choferes/listado'}
+    {label:'Listado de choferes',url:'/admin/choferes/listado'}
   ]
 
   currentPage:string='Eliminar chofer'
@@ -118,12 +118,12 @@ export class DeleteDriverComponent implements OnInit,OnDestroy {
         this.driver = res;
 
         const redirect = () => {
-        this.router.navigate(['/admin/choferes/ver',this.driver._id]);
+        this.router.navigate(['/admin/choferes/perfil',this.driver._id]);
         }
 
         const config = {
         message:'Chofer actualizado con exito!!',
-        timmer:1500 
+        timmer:1200 
         }
 
         this.notFoundedError=false

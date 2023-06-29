@@ -31,12 +31,12 @@ const routes: Routes = [
   component:DeleteDriverComponent
   },
   {
-  path:'editar/:id',
-  component:EditDriverComponent  
-  },
-  {
   path:'ver/:id',
   component:ObtainDriverComponent
+  },
+  {
+  path:'perfil/:id',
+  component:EditDriverComponent  
   },
   {
   path:'**',

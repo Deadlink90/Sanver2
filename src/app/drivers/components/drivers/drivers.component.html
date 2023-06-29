@@ -14,66 +14,29 @@
   <ng-container *ngIf="!authorizationError && !serverError">
     <!-- Contenedor del titulo -->
     <div class="d-flex align-items-center mb-3 animated fadeIn faster">
-      <h1 class="animated fadeIn faster mr-auto">Choferes</h1>
-  
-        <!-- Search by name -->
-        <form (submit)="sendSearch()" class="mr-2 mb-1">
-          <input
-            [disabled]="getErro"
-            autocomplete="off"
-            type="text"
-            name="search"
-            prefix="RSO"
-            mask="000"
-            class="form-control  mb-1 pr-5 py-3"
-            [(ngModel)]="searchValue"
-            placeholder="Busqueda por codigo"
-          />
-        </form>
-        <!-- Search by name -->
-    
-        <!-- Search by state -->
-        <form class="mr-2">
-          <select
-            [disabled]="getErro"
-            style="font-size: 15px;"
-            name="filterstate"
-            class="form-select pr-5 py-1"
-            [(ngModel)]="filtersObject.status"
-            (change)="onlyState($event)"
-          >
-            <option value="todos">Todos</option>
-    
-            <option value="activo">Activos</option>
-    
-            <option value="inactivo">Inactivos</option>
-          </select>
-          <div
-            style="background: none; border: none"
-            class="input-group-text"
-          ></div>
-        </form>
-        <!-- Search by state -->
-  
+      <h1 class="animated fadeIn faster mr-auto">Choferes</h1>  
+        
+       <!-- Search by state -->
+      
+      <!-- Search by state -->
 
+  
         <button 
           class="btn btn-primary mb-2"
           routerLink="/admin/choferes/crear"
-          [disabled]="getErro"
+          [disabled]="getErro && drivers.length === 0"
         >
          Nuevo Chofer
         </button>
-
     </div>
     <!-- Contenedor del titulo -->
-   
   
-    <!-- Alerts -->
+     <!-- Alerts -->
     <div
       class="alert alert-dismissible"
       role="alert"
-      [class.alert-danger]="getErro"
-      [class.alert-primary]="!getErro"
+      [class.alert-danger]="getErro && drivers.length === 0"
+      [class.alert-primary]="!getErro || drivers.length>0"
       *ngIf="checkQuerysObject.codigo"
     >
       <div class="alert-icon">
@@ -83,10 +46,25 @@
         Resultados para <strong>{{ checkQuerysObject.codigo }}</strong>
       </div>
     </div>
-  
+
     <div
-      [class.alert-danger]="getErro"
-      [class.alert-primary]="!getErro"
+      class="alert alert-dismissible"
+      role="alert"
+      [class.alert-danger]="getErro && drivers.length === 0"
+      [class.alert-primary]="!getErro || drivers.length>0"
+      *ngIf="checkQuerysObject.ruta"
+    >
+      <div class="alert-icon">
+        <i class="far fa-fw fa-bell"></i>
+      </div>
+      <div class="alert-message">
+        Resultados para choferes asignados a la ruta <strong>{{ obtainrouteName(checkQuerysObject.ruta) }}</strong>
+      </div>
+    </div>
+    
+    <div
+      [class.alert-danger]="getErro && drivers.length === 0"
+      [class.alert-primary]="!getErro || drivers.length>0"
       class="alert alert-dismissible"
       role="alert"
       *ngIf="checkQuerysObject.status"
@@ -105,10 +83,9 @@
   
         <!-- Card de datos-->
         <div class="card" *ngIf="drivers.length > 0">
-
           <div class="card-header pb-0 mb-0">
             <div class="card-actions float-end">
-              <div class="dropdown position-relative" *ngIf="!getErro">
+              <div class="dropdown position-relative" *ngIf="!getErro && drivers.length > 0">
                 <a
                   href="#"
                   data-bs-toggle="dropdown"
@@ -120,6 +97,7 @@
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-end">
+
                   <a class="dropdown-item" 
                   (click)="cleanFilters()"
                   >
@@ -129,6 +107,7 @@
                   </svg>
                   Limpiar filtros
                 </a>
+
                   <a class="dropdown-item"
                   (click)="exportExcel()"
                   >
@@ -137,122 +116,223 @@
                   </svg>
                   Descargar excel
                 </a>
+
                 </div>
               </div>
             </div>
             
-            <h5 class="card-title mb-0">Choferes</h5>
+            <h5 class="card-title mb-0">Listado De Choferes</h5>
           </div>
 
-          <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
-            <form class="px-4">
-              <div class="input-group my-auto">
-                <span class="mr-1 mt-1">Mostrando</span>
-                <select
-                name="elements"
-                style="font-size: 13px;"
-                class="form-select py-1"
-                (change)="onOptionSelected($event)"
-                [(ngModel)]="itemsPerPage"
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-              </select> 
-              <span class="ml-1 mt-1">elementos por pagina</span>  
-              </div>              
-        </form>  
-
-        <div class="border">
-
+          <div class="d-flex justify-content-between align-items-center mt-3 mb-0 ">
+           
+             <!-- Search by code -->
+       <form (submit)="sendSearch()" class="ml-4">
+        <div class="input-group">
+          <span class="input-group-append ">
+            <div class="input-group-text bg-transparent">
+            RS
+          </div>
+        </span>
+          <input
+          [disabled]="getErro && drivers.length === 0"
+          autocomplete="off"
+          type="text"
+          name="search"
+          mask="0000"
+          class="form-control py-0 pr-5"
+          [(ngModel)]="searchValue"
+          placeholder="0000"
+        />
+        <!-- <span class="input-group-append">
+          <div class="input-group-text bg-transparent">
+          <i class="fa fa-search"></i>
         </div>
+      </span> -->
+        </div>
+      </form>
+      <!-- Search by code -->
+
+        <!-- ItemsPerPage -->
+        <form class="mr-3">
+          <div class="input-group">
+
+            <span class="mr-1">
+              Mostrando
+            </span>
+            
+            <select
+            name="elements"
+            [disabled]="getErro && drivers.length === 0"
+            class="form-select py-0"
+            (change)="onOptionSelected($event)"
+            [(ngModel)]="itemsPerPage"
+          >
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+          </select> 
+
+          <span class="ml-2">
+            registros
+          </span>
+
+          </div>
+        </form> 
+        <!-- ItemsPerPage -->
+
           </div>
 
-          <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mt-3 mb-0 ">
+
+            <div class="d-flex flex-row ml-4">
+              <form class="py-1">
+                <div class="input-group">
+                  <span class="mt-1 text-dark mx-0">
+                    Estado:
+                  </span>
+                  <select
+                    [disabled]="getErro && drivers.length === 0"
+                    name="filterstate"
+                    class="form-select py-1 pl-1 mx-0 filter-select text-dark"
+                    [(ngModel)]="filtersObject.status"
+                    (change)="onlyState($event)"
+                  >
+                    <option value="todos">Todos</option>
+            
+                    <option value="activo">Activos</option>
+            
+                    <option value="inactivo">Inactivos</option>
+                  </select>
+                </div>
+              </form>
+  
+              <form class="py-1 mr-2">
+                <div class="input-group">
+                  <span class="mt-1 mx-0 text-dark">
+                    Ruta:
+                  </span>
+                  <select
+                    [disabled]="getErro && drivers.length === 0"
+                    name="filteroute"
+                    class="form-select py-1 pl-1 mx-0 filter-select text-dark"
+                    [(ngModel)]="filtersObject.ruta"
+                    (change)="onlyRoute($event)"
+                  >
+                    <option 
+                    *ngFor="let ruta of rutasArray"
+                    [value]="ruta._id"
+                    > {{ruta.nombre}} </option>
+      
+                  </select>
+                </div>
+              </form>
+            </div>
+
+            <div class="d-flex flex-row mr-3">
+            
+            </div>
+            
+          </div>
+
+
+          <div class="card-body mt-0">
   
             <table
-              class="table table-striped animated fadeIn faster"
+              class="table table-striped table-sm animated fadeIn faster"
               *ngIf="drivers.length > 0"
             >
               <thead>
                 <tr>
-                  <th style="width: 10%">#</th>
-                  <th style="width: 15%">Codigo</th>
-                  <th style="width: 20%">Nombre</th>
-                  <th style="width: 15%">Ap. Paterno</th>
-                  <th class="d-none d-md-table-cell" style="width: 15%">
+                  <th style="width: 15%; border-top: none;">Nombre</th>
+                  <th style="width: 15%; border-top: none;">Ap. Paterno</th>
+                  <th class="d-none d-md-table-cell" style="width: 15%; border-top: none;">
                     Ap. Materno
                   </th>
-                  <th style="width: 10%">Estado</th>
-                  <th>Acciones</th>
+                  <th style="width: 15%; border-top: none;">Telefono</th>
+                  <th style="width: 12%; border-top: none;">Ruta</th>
+                  <th style="width: 10%; border-top: none;">Codigo</th>
+                  <th style="width: 10%; border-top: none;">Estado</th>
+                  <th style="width: 15%; border-top: none;"></th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let driver of drivers">
-                  <td>
-                    <img
-                      src="../../../../assets//img/driver.png"
-                      width="32"
-                      height="32"
-                      class="rounded-circle my-n1"
-                      alt="Avatar"
-                    />
-                  </td>
-                  <td>{{ driver.codigo }}</td>
                   <td>{{ driver.nombre | capitalize }}</td>
                   <td>{{ driver.paterno | capitalize }}</td>
                   <td class="d-none d-md-table-cell">
                     {{ driver.materno | capitalize }}
                   </td>
-                  <td class="d-none d-md-table-cell text-center">
+                  <td *ngIf="driver.telefono">
+                    {{ driver.telefono }}
+                  </td>
+                  <td *ngIf="!driver.telefono" class="text-danger">
+                    No proporcionado
+                  </td>
+                  <td *ngIf="driver.ruta">{{ driver.ruta.nombre }}</td>
+                  <td *ngIf="!driver.ruta">{{ driver.ruta_ }}</td>
+                  <td>{{ driver.codigo }}</td>
+                  <td class="d-none d-md-table-cell text-center mr-1">
                     <span
-                      class="badge bg-success my-2"
+                      class="my-2 mr-2 badge bg-success"
                       *ngIf="driver.status === 'activo'"
                     >
                       {{ driver.status | capitalize }}
                     </span>
                     <span
-                      class="badge bg-warning my-2"
+                      class="my-2 mr-2 badge bg-danger"
                       *ngIf="driver.status === 'inactivo'"
                     >
                       {{ driver.status | capitalize  }}
                     </span>
                   </td>
-                  <td class="table-action">
-                    <a
-                      class="mr-4"
-                      [routerLink]="['/admin/choferes/ver', driver._id]"
-                    >
-                      <svg
+                  <td class="table-action d-flex justify-content-center" >
+                    <div class="stat" style="background: #E5E7E9; color: #2E4053;">
+                      <div class="dropdown position-relative">
+                        <a
+                          href="#"
+                          data-bs-toggle="dropdown"
+                          data-bs-display="static"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                        </svg>
+                        </a>
+        
+                        <div class="dropdown-menu dropdown-menu-end" style="z-index: 9999;">
+
+                          <a class="dropdown-item text-dark" 
+                        [routerLink]="['/admin/choferes/perfil', driver._id]"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person mr-2" viewBox="0 0 16 16">
+                          <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
+                        </svg>
+                        Perfil
+                      </a>
+                        
+                        
+                          <a class="dropdown-item text-dark"
+                          *ngIf="driver.status !== 'inactivo'"
+                    [routerLink]="['/admin/choferes/eliminar', driver._id]"
+                       >
+                          
+                          <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
                         height="16"
                         fill="currentColor"
-                        class="bi bi-nut ml-1"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="m11.42 2 3.428 6-3.428 6H4.58L1.152 8 4.58 2h6.84zM4.58 1a1 1 0 0 0-.868.504l-3.428 6a1 1 0 0 0 0 .992l3.428 6A1 1 0 0 0 4.58 15h6.84a1 1 0 0 0 .868-.504l3.429-6a1 1 0 0 0 0-.992l-3.429-6A1 1 0 0 0 11.42 1H4.58z"
-                        />
-                        <path
-                          d="M6.848 5.933a2.5 2.5 0 1 0 2.5 4.33 2.5 2.5 0 0 0-2.5-4.33zm-1.78 3.915a3.5 3.5 0 1 1 6.061-3.5 3.5 3.5 0 0 1-6.062 3.5z"
-                        />
-                      </svg>
-                    </a>
-                    <a [routerLink]="['/admin/choferes/eliminar', driver._id]">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-trash3"
+                        class="bi bi-trash3 mr-2"
                         viewBox="0 0 16 16"
                       >
                         <path
                           d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"
                         />
                       </svg>
-                    </a>
+                          Dar de baja
+                        </a>
+                        </div>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -261,40 +341,55 @@
             <div
               class="d-flex justify-content-between align-items-center mb-1"
               *ngIf="drivers.length > 0"
+            
             >
-              <div class="text-muted" style="font-size: medium">
-                {{ response.totalPages }} paginas en total ({{
-                  response.totalDocs
-                }}
-                registros).
+            
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination pagination-md">
+                    <li class="page-item">
+                      <a class="page-link py-2 px-3" (click)="previousPage()"
+                        ><i class="fas fa-angle-left"></i
+                      ></a>
+                    </li>
+    
+                    <li
+                      class="page-item"
+                      *ngFor="let number of visiblePageNumbers"
+                      [class.active]="currentPage === number"
+                    >
+                      <a class="page-link py-2 px-3" (click)="navigateToPage(number)">{{
+                        number
+                      }}</a>
+                    </li>
+    
+                    <li class="page-item" *ngIf="response.hasNextPage">
+                      <a class="page-link py-2 px-3" (click)="nextPage()"
+                        ><i class="fas fa-angle-right"></i
+                      ></a>
+                    </li>
+                  </ul>
+                </nav>
+
+                <div class="mr-3" >
+                  {{ response.totalPages }} paginas en total ({{
+                    response.totalDocs
+                  }}
+                  registros).
+                </div>
+
+                
+                
               </div>
-  
-              <nav aria-label="Page navigation example">
-                <ul class="pagination pagination-md">
-                  <li class="page-item">
-                    <a class="page-link py-2 px-3" (click)="previousPage()"
-                      ><i class="fas fa-angle-left"></i
-                    ></a>
-                  </li>
-  
-                  <li
-                    class="page-item"
-                    *ngFor="let number of visiblePageNumbers"
-                    [class.active]="currentPage === number"
-                  >
-                    <a class="page-link py-2 px-3" (click)="navigateToPage(number)">{{
-                      number
-                    }}</a>
-                  </li>
-  
-                  <li class="page-item" *ngIf="response.hasNextPage">
-                    <a class="page-link py-2 px-3" (click)="nextPage()"
-                      ><i class="fas fa-angle-right"></i
-                    ></a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+              
+              <div
+              class="d-flex justify-content-center align-items-center mb-1 mt-4"
+              *ngIf="drivers.length > 0 && isThereParams"
+              >
+              <p>
+                ¿No encuentras lo que buscas? Algunos registros podrian estar ocultos debido a los filtros. <a class="text-primary" (click)="cleanFilters()">Mostrar todo</a>
+              </p>
+          </div>
+            
           </div>
           <!-- Card Body -->
         </div>
@@ -324,10 +419,10 @@
                     Asegurate de haber escrito el codigo correctamente.
                   </li>
                   <li class="h4">
-                    Vuelve a escribir tu busqueda o regresa al
+                    regresa al
                     <a (click)="cleanFilters()" class="link-primary text-primary"
                       >listado de choferes.</a
-                    >
+                    > y vuelve a realizar tu busqueda. 
                   </li>
                 </ul>
               </div>
@@ -374,6 +469,45 @@
           </div>
         </div>
         <!-- notFoundedState-->
+
+        <!-- notFoundedRoute-->
+        <div
+          class="card"
+          *ngIf="drivers.length === 0 && getErro && checkQuerysObject.ruta"
+        >
+          <div class="card-body">
+            <div class="row m-4">
+              <div class="col-md-3 d-flex justify-content-center">
+                <img
+                  src="../../../../assets/img/5613.jpg"
+                  style="width: 60%"
+                  class="ml-3"
+                />
+              </div>
+  
+              <div class="col-md-9">
+                <h2 class="mb-3">
+                  Sin resultados para choferes asignados a la ruta: <br> 
+                  "{{ obtainrouteName(checkQuerysObject.ruta)}}"
+                </h2>
+                <ul>
+                  <li class="h4">
+                    Si crees que es un error contacte con el personal adecuado.
+                  </li>
+                  <li class="h4">
+                    regresa al
+                    <a (click)="cleanFilters()" class="link-primary text-primary"
+                      >listado de choferes.</a
+                    > y prueba con otras rutas. 
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- notFoundedRoute-->
+
+
   
       </div>
     </div>
@@ -381,6 +515,7 @@
   <!-- Contenedor del titulo -->
 
   <ng-container *ngIf="authorizationError || serverError">
+
     <div class="row">
       <div class="col-12">
 
@@ -413,9 +548,7 @@
 
       </div>
     </div>
-   
 
-    
   </ng-container>
  
 </ng-template>

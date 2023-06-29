@@ -37,6 +37,7 @@
       *ngFor="let provider of providers"
       >
         <div class="card flex-fill">
+
           <div class="card-body">
             <div class="row">
               <div class="col mt-0">
@@ -108,10 +109,11 @@
               </span>
               <span class="text-muted">
 
-                
+                <a [routerLink]="['/admin/ajustes/proveedores/editar',provider._id]" class="stretched-link"></a>
 
               </span>
             </div>
+            
           </div>
         </div>
       </div>

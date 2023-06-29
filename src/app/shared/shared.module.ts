@@ -5,6 +5,7 @@ import { NavbarComponent } from './dashboard/navbar/navbar.component';
 import { SidebarComponent } from './dashboard/sidebar/sidebar.component';
 import { TemplateComponent } from './dashboard/template/template.component';
 import { DriversRoutingModule } from '../drivers/drivers-routing.module';
+import { MaterialModule } from '../material/material.module';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { DriversRoutingModule } from '../drivers/drivers-routing.module';
   ],
   imports: [
     CommonModule,
-    DriversRoutingModule
+    DriversRoutingModule,
+    MaterialModule
   ],
   exports:[
   TemplateComponent  

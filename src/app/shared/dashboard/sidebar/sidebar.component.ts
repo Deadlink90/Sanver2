@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 export class SidebarComponent {
 
+  username = localStorage.getItem('username');
+  rol = localStorage.getItem('rol');
 
   
 }

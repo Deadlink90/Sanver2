@@ -10,6 +10,10 @@ import { EditComponent } from './dialogs/settings/edit/edit.component';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatStepperModule} from '@angular/material/stepper';
+
+
 
 @NgModule({
   entryComponents:[
@@ -28,7 +32,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatDialogModule,
     MatChipsModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatStepperModule
+    
   ],
   exports: [
     MatButtonModule,
@@ -39,7 +46,9 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatDialogModule,
     MatChipsModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatStepperModule
   ],
 })
 export class MaterialModule {}

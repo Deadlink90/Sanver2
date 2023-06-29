@@ -43,6 +43,7 @@ export class ErrorsService {
 
     if(token || sesion){
       this.observables.serverError$.emit(true);
+      this.observables.errorString$.emit('serverError')
       this.alerts.genericShowError();
     }
   
@@ -50,6 +51,7 @@ export class ErrorsService {
 
   notFoundedError(){
   this.observables.notFoundedError$.emit(true);  
+  this.observables.errorString$.emit('notFoundedError');
   }
 
   notUpdatedError(){

@@ -11,5 +11,6 @@ export class ObservablesService {
    serverError$ = new EventEmitter<boolean>();
    notFoundedError$ = new EventEmitter<boolean>();
    reloadPage$ = new EventEmitter<boolean>();
+   errorString$ = new EventEmitter<string>();
 
 }
